@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import operator
 from scipy.spatial.distance import pdist, squareform, cdist
 
 class kNN:
@@ -12,10 +13,39 @@ class kNN:
         return self.learningData
     def getLabels(self):
         return self.labels
+    def getK(self):
+        return self.k
+    def predict(self,data): # data without labels
+       distance = []
+       for i in range(len(data)):
+           dist = 0
+           for j in range(len(self.learningData)):
+               dist = np.linalg.norm(data[i] - self.learningData[j])
+               distance.append((self.labels[j],dist))
+
+
+ #      distance.sort(key=operator.itemgetter(1))
+       x = (int)(len(distance) /len(data))
+       y = 0
+       z = x
+       neighbors = []
+
+       for i in range(len(data)):
+           print("NR " + str (i))
+           temp = []
+           while(y<x):
+               temp.append(distance[y])
+               y = y + 1;
+           temp.sort(key=operator.itemgetter(1))
+           for j in range(self.k):
+               print (temp[j])
+           x = x + z
+
+
 
 
 k = kNN(5,"iris.data.learning")
-x = k.getLabels()
-print(x)
-y=k.getLearningData()
-print(y)
+
+testData = np.array(pd.read_csv("iris.data.test",header=None))
+test = testData[:,0:4]
+k.predict(test)
