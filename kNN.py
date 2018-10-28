@@ -28,8 +28,8 @@ class kNN:
        x = (int)(len(distance) /len(data))
        y = 0
        z = x
-       neighbors = []
-
+      # neighbors = []
+       predictLabels = []
        for i in range(len(data)):
            print("NR " + str (i))
            temp = []
@@ -39,13 +39,19 @@ class kNN:
            temp.sort(key=operator.itemgetter(1))
            for j in range(self.k):
                print (temp[j])
+               predictLabels.append(temp[j])
            x = x + z
+       return predictLabels
 
+    def score(self,data,labels):
+        labelsWithDistance = np.array(self.predict(data))
+        allLabels = labelsWithDistance[:,0]
+        counter = 0
+        x = 0
+        for i in range(len(allLabels)):
+            if(labels[x] == allLabels[i]):
+                counter = counter + 1
+            if( (i + 1) % self.k == 0 ):
+                x = x + 1
 
-
-
-k = kNN(5,"iris.data.learning")
-
-testData = np.array(pd.read_csv("iris.data.test",header=None))
-test = testData[:,0:4]
-k.predict(test)
+        return counter/len(allLabels)
